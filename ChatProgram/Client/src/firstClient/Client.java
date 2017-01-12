@@ -6,42 +6,53 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
+import firstClient.ReceiveMessageHandler;
+import firstClient.SendMessageHandler;
+
 
 public class Client {		
-	private Socket clientSocket = null;	
-	private ObjectInputStream readStream = null;
-	private ObjectOutputStream writeStream = null;
+	private Socket clientSocket;	
+	private ObjectInputStream readStream;
+	private ObjectOutputStream writeStream;
 	
-	private Thread receiveThread = null;
-	private Thread sendThread = null;
+	private Thread receiveThread;
+	private Thread sendThread;
 	
 	// 소켓 생성 및 스레드 생성
-	void bind(String ip, int port) {
+	public void bind(String ip, int port) {
 		try {
 			clientSocket = new Socket(ip, port);
 			writeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 			readStream = new ObjectInputStream(clientSocket.getInputStream());
-			
-			login();	// 로그인 메시지 전송
-			
-			sendThread = new Thread(new sendMessageHandler(writeStream));
-			receiveThread = new Thread(new receiveMessageHandler(readStream));
+									
+			sendThread = new Thread(new SendMessageHandler(writeStream));
+			receiveThread = new Thread(new ReceiveMessageHandler(readStream));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	// 채팅 시작
-	void start() {
-		// 각각의 받기/보내기 핸들러 start
-		if (clientSocket != null) {
-			sendThread.start();		// 보내기 스레드
-			receiveThread.start();	// 받기 스레드
+	public void start()
+	{
+		login();	// 로그인
+		
+		receiveThread = new Thread(new receiveMessageHandler(readStream));
+		sendThread = new Thread(new sendMessageHandler(writeStream));
+		
+		receiveThread.start();
+		sendThread.start();
+		
+		try {
+			receiver.join();
+			sender.join(); 
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
+	}		
 	
-	void login() throws IOException {		
+	private void login() throws IOException {		
 		System.out.print("ID입력: ");
 		String id = new Scanner(System.in).nextLine();
 		

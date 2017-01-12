@@ -3,12 +3,13 @@ package firstClient;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
+import firstClient.Message;
 
 
-public class sendMessageHandler implements Runnable {
+public class SendMessageHandler implements Runnable {
 	private ObjectOutputStream writeStream;
 	
-	public sendMessageHandler(ObjectOutputStream writeStream) {
+	public SendMessageHandler(ObjectOutputStream writeStream) {
 		super();
 		this.writeStream = writeStream;
 	}
