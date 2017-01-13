@@ -1,4 +1,4 @@
-package firstClient;
+package Client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,8 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-import firstClient.ReceiveMessageHandler;
-import firstClient.SendMessageHandler;
+import common.Message;
 
 
 public class Client {		
@@ -61,7 +60,7 @@ public class Client {
 	
 	public static void main(String[] args) {
 		Client ct = new Client();
-		ct.bind("localhost", 2222);
+		ct.bind("localhost", 3000);
 		ct.start();
 	}
 

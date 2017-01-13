@@ -1,4 +1,4 @@
-package firstServer;
+package common;
 
 import java.io.Serializable;
 

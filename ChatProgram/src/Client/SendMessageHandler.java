@@ -1,8 +1,10 @@
-package firstClient;
+package Client;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
+
+import common.Message;
 
 
 public class SendMessageHandler implements Runnable {
