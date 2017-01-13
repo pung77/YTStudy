@@ -22,7 +22,7 @@ public class ReceiveMessageHandler implements  Runnable{
 				switch(receiveMessage.getMessageType())
 				{
 					case Message.type_MESSAGE:
-						System.out.printf("[Client] Get Message : %s\n", receiveMessage.getMessage());
+						System.out.printf("%s : %s\n", receiveMessage.getSender(), receiveMessage.getMessage());
 						break;
 					default:					
 				}

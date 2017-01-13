@@ -36,18 +36,14 @@ public class Client {
 	public void start()
 	{
 		login();	// ·Î±×ÀÎ
-		
-		receiveThread = new Thread(new receiveMessageHandler(readStream));
-		sendThread = new Thread(new sendMessageHandler(writeStream));
-		
+						
 		receiveThread.start();
 		sendThread.start();
 		
 		try {
-			receiver.join();
-			sender.join(); 
+			receiveThread.join();
+			sendThread.join(); 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}		
