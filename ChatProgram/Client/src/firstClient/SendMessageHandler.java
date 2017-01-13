@@ -9,7 +9,6 @@ public class SendMessageHandler implements Runnable {
 	private ObjectOutputStream writeStream;
 	
 	public SendMessageHandler(ObjectOutputStream writeStream) {
-		super();
 		this.writeStream = writeStream;
 	}
 
