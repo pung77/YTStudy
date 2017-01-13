@@ -48,7 +48,7 @@ public class Client {
 		}
 	}		
 	
-	private void login() throws IOException {		
+	private void login() {		
 		System.out.print("IDÀÔ·Â: ");
 		String id = new Scanner(System.in).nextLine();
 		

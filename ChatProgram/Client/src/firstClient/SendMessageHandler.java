@@ -3,7 +3,6 @@ package firstClient;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
-import firstClient.Message;
 
 
 public class SendMessageHandler implements Runnable {
@@ -14,7 +13,6 @@ public class SendMessageHandler implements Runnable {
 		this.writeStream = writeStream;
 	}
 
-	@Override
 	public void run() {
 		Scanner sc = new Scanner(System.in);
 		

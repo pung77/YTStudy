@@ -1,7 +1,6 @@
-package test;
+package firstClient;
 
-import java.io.*;
-import firstClient.Message;
+import java.io.ObjectInputStream;
 
 
 public class ReceiveMessageHandler implements  Runnable{
