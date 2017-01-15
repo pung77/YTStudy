@@ -19,8 +19,7 @@ public class ReceiveMessageHandler extends Gui implements Runnable {
 
 				switch (receiveMessage.getMessageType()) {
 				case Message.type_MESSAGE:
-					// System.out.printf("%s : %s\n",
-					// receiveMessage.getSender(), receiveMessage.getMessage());
+//					 System.out.printf("%s : %s\n", receiveMessage.getSender(), receiveMessage.getMessage());
 					Gui.setChatText(receiveMessage.getSender() + ": " + receiveMessage.getMessage());
 					break;
 				default:

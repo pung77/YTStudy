@@ -3,8 +3,6 @@ package Client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,7 +16,7 @@ public class Gui {
 	private static JTextArea chatText;
 	private static JTextField chatLine;
 	
-	public static String getChatText() {
+	public String getChatText() {
 		return chatText.getText();
 	}
 
@@ -34,7 +32,7 @@ public class Gui {
 		Gui.chatLine.setText(text);
 	}
 	
-	public Gui() {		
+	public Gui() {
 		chatPane = new JPanel(new BorderLayout());
 		chatText = new JTextArea(10, 20);
 		chatText.setLineWrap(true); // textbox Å×µÎ¸®
@@ -63,35 +61,4 @@ public class Gui {
 		mainFrame.pack();
 		mainFrame.setVisible(true);
 	}
-	
-	/*interface KeyEventListener {
-		public void keyPressed(KeyEvent e);
-		public void keyTyped(KeyEvent e);
-		public void keyReleased(KeyEvent e);
-	}*/
-
-/*	static class KeyEventListener implements KeyListener {
-		@Override
-		public void keyPressed(KeyEvent e) {
-			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-//				String msg = chatLine.getText();
-//				writeStream.writeObject(new Message(Message.type_MESSAGE, msg));
-//				writeStream.flush();
-				chatLine.setText(chatLine.getText());
-				chatLine.setText("");
-			}
-		}
-
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-	}*/
 }
