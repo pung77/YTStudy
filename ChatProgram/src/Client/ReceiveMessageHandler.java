@@ -5,11 +5,12 @@ import java.io.ObjectInputStream;
 import common.Message;
 
 
-public class ReceiveMessageHandler implements  Runnable{
-	private ObjectInputStream reader;		
+public class ReceiveMessageHandler extends Gui implements  Runnable{
+	private ObjectInputStream reader;
 	
 	public ReceiveMessageHandler(ObjectInputStream reader)
 	{
+		super();
 		this.reader = reader;
 	}
 	
@@ -24,6 +25,7 @@ public class ReceiveMessageHandler implements  Runnable{
 				{
 					case Message.type_MESSAGE:
 						System.out.printf("%s : %s\n", receiveMessage.getSender(), receiveMessage.getMessage());
+//						Gui.setChatText(receiveMessage.getSender() +": " + receiveMessage.getMessage());
 						break;
 					default:					
 				}

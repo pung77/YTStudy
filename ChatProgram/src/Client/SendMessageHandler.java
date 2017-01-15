@@ -7,13 +7,14 @@ import java.util.Scanner;
 import common.Message;
 
 
-public class SendMessageHandler implements Runnable {
+public class SendMessageHandler extends Gui implements Runnable {
 	private ObjectOutputStream writeStream;
 	
 	public SendMessageHandler(ObjectOutputStream writeStream) {
+		super();
 		this.writeStream = writeStream;
 	}
-
+	
 	public void run() {
 		Scanner sc = new Scanner(System.in);
 		

@@ -36,7 +36,7 @@ public class Server {
                 e.printStackTrace();
             }
 
-            // 硫붿꽭吏� �닔�떊
+            // 筌롫뗄苑�筌욑옙 占쎈땾占쎈뻿
             try {
                 while (true) {
                     m_object = m_oIn.readObject();
@@ -63,7 +63,7 @@ public class Server {
                 if (clInfo == null)
                     continue;
 
-                // client�뿉 硫붿떆吏�瑜� 蹂대궦�떎
+                // client占쎈퓠 筌롫뗄�뻻筌욑옙�몴占� 癰귣�沅�占쎈뼄
                 socket = clInfo.GetSocket();
                 if (socket == null)
                     continue;
@@ -76,7 +76,7 @@ public class Server {
             }
         }
 
-        public Boolean ProcessingByMessageType(Message msg) {
+        public Boolean ProcessingByMessageType(Message msg) throws IOException {
             if (msg == null)
                 return false;
 
@@ -98,21 +98,23 @@ public class Server {
 
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
 
-                // todo : �빐�떦 �븘�씠�뵒媛� �뱾�뼱�솕�떎怨� sendToAll
+                // todo : 占쎈퉸占쎈뼣 占쎈툡占쎌뵠占쎈탵揶쏉옙 占쎈굶占쎈선占쎌넅占쎈뼄�⑨옙 sendToAll
             } else if (nMessageType == Message.type_MESSAGE) {
                 ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
-                if (clInfo == null)
-                    return false;
-
-                // 紐⑤뱺 �겢�씪�씠�뼵�듃�뿉寃� �쟾�넚
-                SendToAll(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
+                System.out.println("msg type: " + msg.getMessageType() + ", msg: " + msg.getMessage() + ", id정보: " + clInfo.GetClientID());
+                m_oOut.writeObject(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
+//                if (clInfo == null)
+//                    return false;
+//
+//                // 筌뤴뫀諭� 占쎄깻占쎌뵬占쎌뵠占쎈섧占쎈뱜占쎈퓠野껓옙 占쎌읈占쎈꽊
+//                SendToAll(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
             } else {
-                // mapClient�뿉 �빐�떦 ip媛� �엳�떎硫� �젣嫄�
+                // mapClient占쎈퓠 占쎈퉸占쎈뼣 ip揶쏉옙 占쎌뿳占쎈뼄筌롳옙 占쎌젫椰꾬옙
                 if (mapClient.containsKey(strIpAddr)) {
                     mapClient.remove(strIpAddr);
                     System.out.println("Removeing id is successful. ip : " + strIpAddr + ", id : " + strMessge);
 
-                    // todo : �빐�떦 �븘�씠�뵒媛� �굹媛붾떎怨� sendToAll
+                    // todo : 占쎈퉸占쎈뼣 占쎈툡占쎌뵠占쎈탵揶쏉옙 占쎄돌揶쏅뗀�뼄�⑨옙 sendToAll
                 } else
                     System.out.println("Removing id is failed. This ip is not registered. ip : " + strIpAddr);
             }
@@ -124,13 +126,13 @@ public class Server {
         }
     }
 
-    // �꽌踰� �떆�옉 �븿�닔
+    // 占쎄퐣甕곤옙 占쎈뻻占쎌삂 占쎈맙占쎈땾
     public void ServerStart(Boolean bStart) {
         Socket socket = null;
         if (bStart) {
             try {
                 serverSocket = new ServerSocket(nServerPort);
-                System.out.println("�꽌踰꾧� �떆�옉�릺�뿀�뒿�땲�떎.");
+                System.out.println("占쎄퐣甕곌쑨占� 占쎈뻻占쎌삂占쎈┷占쎈�占쎈뮸占쎈빍占쎈뼄.");
             } catch (IOException e1) {
                 e1.printStackTrace();
                 return;
@@ -175,13 +177,13 @@ public class Server {
         return null;
     }
 
-    // �냼硫몄옄媛숈� 媛쒕뀗�씠�씪 �븳�떎.
+    // 占쎈꺖筌롫챷�쁽揶쏆늿占� 揶쏆뮆�쀯옙�뵠占쎌뵬 占쎈립占쎈뼄.
     public void finalize() {
-        System.out.println("媛앹껜�쓽 留덉�留� �쑀�뼵... Bye Server.");
+        System.out.println("揶쏆빘猿쒙옙�벥 筌띾뜆占쏙쭕占� 占쎌�占쎈섧... Bye Server.");
     }
 
     public static void main(String[] args) {
-        // �꽌踰� �떆�옉 �븿�닔
+        // 占쎄퐣甕곤옙 占쎈뻻占쎌삂 占쎈맙占쎈땾
         Server myServer = new Server();
         myServer.ServerStart(true);
     }

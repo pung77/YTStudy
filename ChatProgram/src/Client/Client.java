@@ -23,7 +23,7 @@ public class Client {
 			clientSocket = new Socket(ip, port);
 			writeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 			readStream = new ObjectInputStream(clientSocket.getInputStream());
-									
+			
 			sendThread = new Thread(new SendMessageHandler(writeStream));
 			receiveThread = new Thread(new ReceiveMessageHandler(readStream));
 			
@@ -47,7 +47,7 @@ public class Client {
 		}
 	}		
 	
-	private void login() {		
+	private void login() {
 		System.out.print("IDÀÔ·Â: ");
 		String id = new Scanner(System.in).nextLine();
 		
