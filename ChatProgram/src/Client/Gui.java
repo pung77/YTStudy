@@ -18,11 +18,11 @@ public class Gui {
 	private static JTextArea chatText;
 	private static JTextField chatLine;
 	
-	public String getChatText() {
+	public static String getChatText() {
 		return chatText.getText();
 	}
 
-	public String getChatLine() {
+	public static String getChatLine() {
 		return chatLine.getText();
 	}
 	
@@ -40,14 +40,13 @@ public class Gui {
 		chatText.setLineWrap(true); // textbox 테두리
 		chatText.setEditable(false); // textbox 수정여부
 		chatText.setForeground(Color.blue); // 글씨색
-//		chatText.setText("채팅글 올라오는란");
+		
 		JScrollPane chatTextPane = new JScrollPane(chatText, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		chatLine = new JTextField();
 		chatLine.setEnabled(true);
 		chatLine.addKeyListener(new KeyEventListener());
-//		chatLine.setText("사용자입력란");
 
 		chatPane.add(chatLine, BorderLayout.SOUTH);
 		chatPane.add(chatTextPane, BorderLayout.CENTER);
@@ -64,14 +63,21 @@ public class Gui {
 		mainFrame.pack();
 		mainFrame.setVisible(true);
 	}
+	
+	/*interface KeyEventListener {
+		public void keyPressed(KeyEvent e);
+		public void keyTyped(KeyEvent e);
+		public void keyReleased(KeyEvent e);
+	}*/
 
-	static class KeyEventListener implements KeyListener {
+/*	static class KeyEventListener implements KeyListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 //				String msg = chatLine.getText();
 //				writeStream.writeObject(new Message(Message.type_MESSAGE, msg));
 //				writeStream.flush();
+				chatLine.setText(chatLine.getText());
 				chatLine.setText("");
 			}
 		}
@@ -87,5 +93,5 @@ public class Gui {
 			// TODO Auto-generated method stub
 			
 		}
-	}
+	}*/
 }
