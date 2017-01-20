@@ -12,35 +12,34 @@ import common.Message;
 
 public class Server {
 
-    private HashMap<String, ClientInfo> mapClient = new HashMap<String, ClientInfo>();  //first : ip, second : clientInfo
-    private final int nServerPort = 3000;
+    private static HashMap<String, ClientInfo> mapClient = new HashMap<String, ClientInfo>();  //first : ip, second : clientInfo
+    private final int port = 3000;
     private ServerSocket serverSocket = null;
 
     public class ServerReceiverThread implements Runnable {
-        private Socket m_socket;
+        private Socket socket;
 
 
-        private ObjectInputStream m_oIn;
-        private ObjectOutputStream m_oOut;
-        private Object m_object;
+        private ObjectInputStream oIn;
+        private ObjectOutputStream oOut;
+        private Object messageObject;
 
         @Override
         public void run() {
-            System.out.println("thread run ( IP: " + m_socket.getInetAddress() + ", Port: " + m_socket.getPort() + ")");
+            System.out.println("thread run ( IP: " + socket.getInetAddress() + ", Port: " + socket.getPort() + ")");
             try {
-                m_oOut = new ObjectOutputStream(m_socket.getOutputStream());
-                m_oIn = new ObjectInputStream(m_socket.getInputStream());
+                oOut = new ObjectOutputStream(socket.getOutputStream());
+                oIn = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
                 // error,
                 System.out.println("error: " + e);
                 e.printStackTrace();
             }
 
-            // 硫붿꽭吏� �닔�떊
             try {
                 while (true) {
-                    m_object = m_oIn.readObject();
-                    Message msg = (Message) m_object;
+                    messageObject = oIn.readObject();
+                    Message msg = (Message) messageObject;
                     if (!ProcessingByMessageType(msg)) {
                         System.out.println("The ProcessingByMessageType func is failed.");
                     }
@@ -63,13 +62,12 @@ public class Server {
                 if (clInfo == null)
                     continue;
 
-                // client�뿉 硫붿떆吏�瑜� 蹂대궦�떎
                 socket = clInfo.GetSocket();
                 if (socket == null)
                     continue;
 
                 try {
-                    m_oOut.writeObject(msg);
+                    oOut.writeObject(msg);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -84,7 +82,7 @@ public class Server {
             if (nMessageType < 1 || nMessageType > 3)
                 return false;
 
-            String strIpAddr = m_socket.getInetAddress().toString();
+            String strIpAddr = socket.getInetAddress().toString();
             String strMessge = msg.getMessage();
 
             if (nMessageType == Message.type_LOGIN) {
@@ -98,21 +96,18 @@ public class Server {
 
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
 
-                // todo : �빐�떦 �븘�씠�뵒媛� �뱾�뼱�솕�떎怨� sendToAll
             } else if (nMessageType == Message.type_MESSAGE) {
                 ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
                 if (clInfo == null)
                     return false;
 
-                // 紐⑤뱺 �겢�씪�씠�뼵�듃�뿉寃� �쟾�넚
                 SendToAll(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
             } else {
-                // mapClient�뿉 �빐�떦 ip媛� �엳�떎硫� �젣嫄�
+
                 if (mapClient.containsKey(strIpAddr)) {
                     mapClient.remove(strIpAddr);
                     System.out.println("Removeing id is successful. ip : " + strIpAddr + ", id : " + strMessge);
 
-                    // todo : �빐�떦 �븘�씠�뵒媛� �굹媛붾떎怨� sendToAll
                 } else
                     System.out.println("Removing id is failed. This ip is not registered. ip : " + strIpAddr);
             }
@@ -120,17 +115,17 @@ public class Server {
         }
 
         public ServerReceiverThread(Socket socket) {
-            this.m_socket = socket;
+            this.socket = socket;
         }
     }
 
-    // �꽌踰� �떆�옉 �븿�닔
-    public void ServerStart(Boolean bStart) {
+    public void start(Boolean bStart) {
+        // false ��찡 ������??
         Socket socket = null;
         if (bStart) {
             try {
-                serverSocket = new ServerSocket(nServerPort);
-                System.out.println("�꽌踰꾧� �떆�옉�릺�뿀�뒿�땲�떎.");
+                serverSocket = new ServerSocket(port);
+                System.out.println("start server");
             } catch (IOException e1) {
                 e1.printStackTrace();
                 return;
@@ -141,9 +136,9 @@ public class Server {
                     socket = serverSocket.accept();
                     System.out.println("IP : " + socket.getInetAddress() + ", Port : " + socket.getPort());
 
-                    ClientInfo clInfo = new ClientInfo();
-                    clInfo.SetSocket(socket);
-                    mapClient.put(socket.getInetAddress().toString(), clInfo);
+                    ClientInfo client = new ClientInfo();
+                    client.SetSocket(socket);
+                    mapClient.put(socket.getInetAddress().toString(), client);
 
                     Thread st = new Thread(new ServerReceiverThread(socket));
                     st.start();
@@ -175,15 +170,13 @@ public class Server {
         return null;
     }
 
-    // �냼硫몄옄媛숈� 媛쒕뀗�씠�씪 �븳�떎.
     public void finalize() {
-        System.out.println("媛앹껜�쓽 留덉�留� �쑀�뼵... Bye Server.");
+        System.out.println("Bye Server.");
     }
 
     public static void main(String[] args) {
-        // �꽌踰� �떆�옉 �븿�닔
         Server myServer = new Server();
-        myServer.ServerStart(true);
+        myServer.start(true);
     }
 }
 
