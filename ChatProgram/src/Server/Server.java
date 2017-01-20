@@ -7,12 +7,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import common.Message;
 
 public class Server {
 
-    private static HashMap<String, ClientInfo> mapClient = new HashMap<String, ClientInfo>();  //first : ip, second : clientInfo
+	private static HashMap<String, ClientInfo> mapClient = new HashMap<String, ClientInfo>();  //first : ip, second : clientInfo
     private final int port = 3000;
     private ServerSocket serverSocket = null;
 
@@ -51,14 +54,14 @@ public class Server {
         }
 
         public void SendToAll(Message msg) {
-            String strKey;
             ClientInfo clInfo = null;
             Socket socket = null;
 
-            Iterator<String> ite = mapClient.keySet().iterator();
+            Set<Entry<String, ClientInfo>> set = mapClient.entrySet();
+    		Iterator<Entry<String, ClientInfo>> ite = set.iterator();
             while (ite.hasNext()) {
-                strKey = ite.next();
-                clInfo = mapClient.get(strKey);
+            	Map.Entry<String, ClientInfo> e = (Map.Entry<String, ClientInfo>)ite.next();
+                clInfo = e.getValue();
                 if (clInfo == null)
                     continue;
 
@@ -68,8 +71,8 @@ public class Server {
 
                 try {
                     oOut.writeObject(msg);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         }
@@ -86,7 +89,8 @@ public class Server {
             String strMessge = msg.getMessage();
 
             if (nMessageType == Message.type_LOGIN) {
-                ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
+                //ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
+            	ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
                 if (clInfo == null) {
                     System.out.println("Registration is failed. This ip is not registered. ip : " + strIpAddr);
                     return false;
@@ -97,7 +101,8 @@ public class Server {
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
 
             } else if (nMessageType == Message.type_MESSAGE) {
-                ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
+                //ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
+            	ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
                 if (clInfo == null)
                     return false;
 
@@ -138,7 +143,8 @@ public class Server {
 
                     ClientInfo client = new ClientInfo();
                     client.SetSocket(socket);
-                    mapClient.put(socket.getInetAddress().toString(), client);
+                    //mapClient.put(socket.getInetAddress().toString(), client);
+                    mapClient.put(String.valueOf(socket.getPort()), client);
 
                     Thread st = new Thread(new ServerReceiverThread(socket));
                     st.start();
