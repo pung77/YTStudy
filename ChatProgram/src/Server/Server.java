@@ -15,13 +15,13 @@ import common.Message;
 
 public class Server {
 
-	private static HashMap<String, ClientInfo> mapClient = new HashMap<String, ClientInfo>();  //first : ip, second : clientInfo
+    private static HashMap<String, ClientInfo> mapClient = new HashMap<String, ClientInfo>();  //first : ip, second : clientInfo
     private final int port = 3000;
     private ServerSocket serverSocket = null;
 
     public class ServerReceiverThread implements Runnable {
         private Socket socket;
-
+        private ClientInfo threadClient;
 
         private ObjectInputStream oIn;
         private ObjectOutputStream oOut;
@@ -30,14 +30,10 @@ public class Server {
         @Override
         public void run() {
             System.out.println("thread run ( IP: " + socket.getInetAddress() + ", Port: " + socket.getPort() + ")");
-            try {
-                oOut = new ObjectOutputStream(socket.getOutputStream());
-                oIn = new ObjectInputStream(socket.getInputStream());
-            } catch (IOException e) {
-                // error,
-                System.out.println("error: " + e);
-                e.printStackTrace();
-            }
+            threadClient = mapClient.get(String.valueOf(socket.getPort()));
+
+            oOut = threadClient.getObjectOutputStream();
+            oIn = threadClient.getObjectInputStream();
 
             try {
                 while (true) {
@@ -58,9 +54,9 @@ public class Server {
             Socket socket = null;
 
             Set<Entry<String, ClientInfo>> set = mapClient.entrySet();
-    		Iterator<Entry<String, ClientInfo>> ite = set.iterator();
+            Iterator<Entry<String, ClientInfo>> ite = set.iterator();
             while (ite.hasNext()) {
-            	Map.Entry<String, ClientInfo> e = (Map.Entry<String, ClientInfo>)ite.next();
+                Map.Entry<String, ClientInfo> e = (Map.Entry<String, ClientInfo>)ite.next();
                 clInfo = e.getValue();
                 if (clInfo == null)
                     continue;
@@ -70,6 +66,7 @@ public class Server {
                     continue;
 
                 try {
+                    oOut = clInfo.getObjectOutputStream();
                     oOut.writeObject(msg);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -90,7 +87,7 @@ public class Server {
 
             if (nMessageType == Message.type_LOGIN) {
                 //ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
-            	ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
+                ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
                 if (clInfo == null) {
                     System.out.println("Registration is failed. This ip is not registered. ip : " + strIpAddr);
                     return false;
@@ -102,7 +99,7 @@ public class Server {
 
             } else if (nMessageType == Message.type_MESSAGE) {
                 //ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
-            	ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
+                ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
                 if (clInfo == null)
                     return false;
 
@@ -125,7 +122,7 @@ public class Server {
     }
 
     public void start(Boolean bStart) {
-        // false 경우가 있을까??
+        // false ??찡 ????????
         Socket socket = null;
         if (bStart) {
             try {
