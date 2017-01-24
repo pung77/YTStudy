@@ -27,7 +27,6 @@ public class Server {
         private ObjectOutputStream oOut;
         private Object messageObject;
 
-        @Override
         public void run() {
             System.out.println("thread run ( IP: " + socket.getInetAddress() + ", Port: " + socket.getPort() + ")");
             threadClient = mapClient.get(String.valueOf(socket.getPort()));
@@ -96,8 +95,8 @@ public class Server {
                 clInfo.SetClientID(strMessge);
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
                 
-                Message msgSystemLogin = new Message(msg.getMessageType(), clInfo.GetClientID() + "´ÔÀÌ ·Î±×ÀÎ ÇÏ¼Ì½À´Ï´Ù.");
-                // todo : È®ÀÎ
+                Message msgSystemLogin = new Message(msg.getMessageType(), clInfo.GetClientID() + "ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ï¼Ì½ï¿½ï¿½Ï´ï¿½.");
+                // todo : È®ï¿½ï¿½
                 msgSystemLogin.setSender("system");
                 SendToAll(msgSystemLogin);
 
@@ -117,8 +116,8 @@ public class Server {
                     if (clInfo == null)
                     	return false;
                     	
-                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + "´ÔÀÌ ·Î±×¾Æ¿ô µÇ¾ú½À´Ï´Ù.");
-                    // todo : È®ÀÎ
+                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + "ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¾Æ¿ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
+                    // todo : È®ï¿½ï¿½
                     msgSystemLogout.setSender("system");
                     SendToAll(msgSystemLogout);
                 } else
@@ -133,7 +132,7 @@ public class Server {
     }
 
     public void start(Boolean bStart) {
-        // false ??Âô ????????
+        // false ??ï¿½ï¿½ ????????
         Socket socket = null;
         if (bStart) {
             try {
