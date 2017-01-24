@@ -49,7 +49,7 @@ public class Server {
             }
         }
 
-        public void SendToAll(Message msg) {
+		public void SendToAll(Message msg) {
             ClientInfo clInfo = null;
             Socket socket = null;
 
@@ -94,8 +94,12 @@ public class Server {
                 }
 
                 clInfo.SetClientID(strMessge);
-
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
+                
+                Message msgSystemLogin = new Message(msg.getMessageType(), clInfo.GetClientID() + "님이 로그인 하셨습니다.");
+                // todo : 확인
+                msgSystemLogin.setSender("system");
+                SendToAll(msgSystemLogin);
 
             } else if (nMessageType == Message.type_MESSAGE) {
                 //ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
@@ -105,11 +109,18 @@ public class Server {
 
                 SendToAll(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
             } else {
-
                 if (mapClient.containsKey(strIpAddr)) {
                     mapClient.remove(strIpAddr);
                     System.out.println("Removeing id is successful. ip : " + strIpAddr + ", id : " + strMessge);
-
+                    
+                    ClientInfo clInfo = GetClientInfoByIP(String.valueOf(socket.getPort()));
+                    if (clInfo == null)
+                    	return false;
+                    	
+                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + "님이 로그아웃 되었습니다.");
+                    // todo : 확인
+                    msgSystemLogout.setSender("system");
+                    SendToAll(msgSystemLogout);
                 } else
                     System.out.println("Removing id is failed. This ip is not registered. ip : " + strIpAddr);
             }
