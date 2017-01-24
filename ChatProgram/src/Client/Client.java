@@ -14,18 +14,24 @@ public class Client {
 	private ObjectInputStream readStream;
 	private ObjectOutputStream writeStream;
 	
-	private Thread receiveThread;
-	private Thread sendThread;
+//	private Thread receiveThread;
+//	private Thread sendThread;
+	
+	private Gui gui;
 	
 	// 소켓 생성 및 스레드 생성
-	public void bind(String ip, int port) {
+	public void setting(String ip, int port) {
 		try {
 			clientSocket = new Socket(ip, port);
 			writeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 			readStream = new ObjectInputStream(clientSocket.getInputStream());
 			
-			sendThread = new Thread(new SendMessageHandler(writeStream));
-			receiveThread = new Thread(new ReceiveMessageHandler(readStream));
+			gui = new Gui(readStream, writeStream);
+//			gui.setStream(readStream, writeStream);
+			gui.createThread();
+			
+//			sendThread = new Thread(new SendMessageHandler(writeStream));
+//			receiveThread = new Thread(new ReceiveMessageHandler(readStream));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,16 +41,17 @@ public class Client {
 	public void start()
 	{
 		login();	// 로그인
-						
-		receiveThread.start();
-		sendThread.start();
 		
-		try {
-			receiveThread.join();
-			sendThread.join(); 
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		gui.startThread();
+//		receiveThread.start();
+//		sendThread.start();
+		
+//		try {
+////			receiveThread.join();
+////			sendThread.join(); 
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 	}		
 	
 	private void login() {
@@ -60,7 +67,7 @@ public class Client {
 	
 	public static void main(String[] args) {
 		Client ct = new Client();
-		ct.bind("localhost", 3000);
+		ct.setting("localhost", 3000);
 		ct.start();
 	}
 

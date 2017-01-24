@@ -3,6 +3,8 @@ package Client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +17,15 @@ public class Gui {
 	private static JPanel chatPane;
 	private static JTextArea chatText;
 	private static JTextField chatLine;
+	
+	private ObjectInputStream readStream;
+	private ObjectOutputStream writeStream;
+	
+	private Thread receiveThread;
+	private Thread sendThread;
+	
+	private SendMessageHandler sendHandler;
+	private ReceiveMessageHandler receiveHandler;
 	
 	public String getChatText() {
 		return chatText.getText();
@@ -32,7 +43,11 @@ public class Gui {
 		Gui.chatLine.setText(text);
 	}
 	
-	public Gui() {
+	public Gui(ObjectInputStream readStream, ObjectOutputStream writeStream) {
+		this.setStream(readStream, writeStream);
+		this.sendHandler = new SendMessageHandler(this.writeStream, this);
+		this.receiveHandler = new ReceiveMessageHandler(this.readStream, this);
+		
 		chatPane = new JPanel(new BorderLayout());
 		chatText = new JTextArea(10, 20);
 		chatText.setLineWrap(true); // textbox 테두리
@@ -44,7 +59,7 @@ public class Gui {
 
 		chatLine = new JTextField();
 		chatLine.setEnabled(true);
-		chatLine.addKeyListener(new KeyEventListener());
+		chatLine.addKeyListener(this.sendHandler);		// 키이벤트
 
 		chatPane.add(chatLine, BorderLayout.SOUTH);
 		chatPane.add(chatTextPane, BorderLayout.CENTER);
@@ -60,5 +75,28 @@ public class Gui {
 		mainFrame.setLocation(200, 200);
 		mainFrame.pack();
 		mainFrame.setVisible(true);
+	}
+	
+	public void setStream(ObjectInputStream readStream, ObjectOutputStream writeStream) {
+		this.readStream = readStream;
+		this.writeStream = writeStream;
+	}
+	
+	public void createThread() {
+		this.sendThread = new Thread(this.sendHandler);
+		this.receiveThread = new Thread(this.receiveHandler);
+	}
+	
+	public void startThread() {
+		this.receiveThread.start();
+		this.sendThread.start();
+		
+		try {
+			this.receiveThread.join();
+			this.sendThread.join(); 
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
