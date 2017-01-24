@@ -24,7 +24,6 @@ public class Server {
         private ObjectOutputStream m_oOut;
         private Object m_object;
 
-        @Override
         public void run() {
             System.out.println("thread run ( IP: " + m_socket.getInetAddress() + ", Port: " + m_socket.getPort() + ")");
             try {
@@ -36,7 +35,7 @@ public class Server {
                 e.printStackTrace();
             }
 
-            // 筌롫뗄苑�筌욑옙 占쎈땾占쎈뻿
+            // 嶺뚮∥�뾼�땻占썹춯�쉻�삕 �뜝�럥�빢�뜝�럥六�
             try {
                 while (true) {
                     m_object = m_oIn.readObject();
@@ -63,7 +62,7 @@ public class Server {
                 if (clInfo == null)
                     continue;
 
-                // client占쎈퓠 筌롫뗄�뻻筌욑옙�몴占� 癰귣�沅�占쎈뼄
+                // client�뜝�럥�뱺 嶺뚮∥�뾼占쎈뻣嶺뚯쉻�삕占쎈ご�뜝占� �솻洹ｏ옙亦낉옙�뜝�럥堉�
                 socket = clInfo.GetSocket();
                 if (socket == null)
                     continue;
@@ -98,23 +97,23 @@ public class Server {
 
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
 
-                // todo : 占쎈퉸占쎈뼣 占쎈툡占쎌뵠占쎈탵揶쏉옙 占쎈굶占쎈선占쎌넅占쎈뼄�⑨옙 sendToAll
+                // todo : �뜝�럥�돵�뜝�럥堉� �뜝�럥�닡�뜝�럩逾졾뜝�럥�꺏�뤆�룊�삕 �뜝�럥援뜹뜝�럥�꽑�뜝�럩�꼨�뜝�럥堉꾬옙�뫅�삕 sendToAll
             } else if (nMessageType == Message.type_MESSAGE) {
                 ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
-                System.out.println("msg type: " + msg.getMessageType() + ", msg: " + msg.getMessage() + ", id정보: " + clInfo.GetClientID());
+                System.out.println("msg type: " + msg.getMessageType() + ", msg: " + msg.getMessage() + ", id�젙蹂�: " + clInfo.GetClientID());
                 m_oOut.writeObject(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
 //                if (clInfo == null)
 //                    return false;
 //
-//                // 筌뤴뫀諭� 占쎄깻占쎌뵬占쎌뵠占쎈섧占쎈뱜占쎈퓠野껓옙 占쎌읈占쎈꽊
+//                // 嶺뚮ㅄ維�獄�占� �뜝�럡源삣뜝�럩逾у뜝�럩逾졾뜝�럥�꽘�뜝�럥諭쒎뜝�럥�뱺�뇦猿볦삕 �뜝�럩�쓧�뜝�럥苑�
 //                SendToAll(new Message(msg.getMessageType(), msg.getMessage(), clInfo.GetClientID()));
             } else {
-                // mapClient占쎈퓠 占쎈퉸占쎈뼣 ip揶쏉옙 占쎌뿳占쎈뼄筌롳옙 占쎌젫椰꾬옙
+                // mapClient�뜝�럥�뱺 �뜝�럥�돵�뜝�럥堉� ip�뤆�룊�삕 �뜝�럩肉녑뜝�럥堉꾤춯濡녹삕 �뜝�럩�젷濾곌쒀�삕
                 if (mapClient.containsKey(strIpAddr)) {
                     mapClient.remove(strIpAddr);
                     System.out.println("Removeing id is successful. ip : " + strIpAddr + ", id : " + strMessge);
 
-                    // todo : 占쎈퉸占쎈뼣 占쎈툡占쎌뵠占쎈탵揶쏉옙 占쎄돌揶쏅뗀�뼄�⑨옙 sendToAll
+                    // todo : �뜝�럥�돵�뜝�럥堉� �뜝�럥�닡�뜝�럩逾졾뜝�럥�꺏�뤆�룊�삕 �뜝�럡�룎�뤆�룆��占쎈펲占썩뫅�삕 sendToAll
                 } else
                     System.out.println("Removing id is failed. This ip is not registered. ip : " + strIpAddr);
             }
@@ -126,13 +125,13 @@ public class Server {
         }
     }
 
-    // 占쎄퐣甕곤옙 占쎈뻻占쎌삂 占쎈맙占쎈땾
+    // �뜝�럡�맋�뵓怨ㅼ삕 �뜝�럥六삣뜝�럩�굚 �뜝�럥留쇿뜝�럥�빢
     public void ServerStart(Boolean bStart) {
         Socket socket = null;
         if (bStart) {
             try {
                 serverSocket = new ServerSocket(nServerPort);
-                System.out.println("占쎄퐣甕곌쑨占� 占쎈뻻占쎌삂占쎈┷占쎈�占쎈뮸占쎈빍占쎈뼄.");
+                System.out.println("�뜝�럡�맋�뵓怨뚯뫅�뜝占� �뜝�럥六삣뜝�럩�굚�뜝�럥�뵹�뜝�럥占썲뜝�럥裕멨뜝�럥鍮띶뜝�럥堉�.");
             } catch (IOException e1) {
                 e1.printStackTrace();
                 return;
@@ -177,13 +176,13 @@ public class Server {
         return null;
     }
 
-    // 占쎈꺖筌롫챷�쁽揶쏆늿占� 揶쏆뮆�쀯옙�뵠占쎌뵬 占쎈립占쎈뼄.
+    // �뜝�럥爰뽫춯濡レ굣占쎌겱�뤆�룇�듌�뜝占� �뤆�룇裕놅옙���삕占쎈턄�뜝�럩逾� �뜝�럥由썲뜝�럥堉�.
     public void finalize() {
-        System.out.println("揶쏆빘猿쒙옙�벥 筌띾뜆占쏙쭕占� 占쎌�占쎈섧... Bye Server.");
+        System.out.println("�뤆�룇鍮섊뙼�뮋�삕占쎈꺄 嶺뚮씭�쐠�뜝�룞彛뺝뜝占� �뜝�럩占썲뜝�럥�꽘... Bye Server.");
     }
 
     public static void main(String[] args) {
-        // 占쎄퐣甕곤옙 占쎈뻻占쎌삂 占쎈맙占쎈땾
+        // �뜝�럡�맋�뵓怨ㅼ삕 �뜝�럥六삣뜝�럩�굚 �뜝�럥留쇿뜝�럥�빢
         Server myServer = new Server();
         myServer.ServerStart(true);
     }
