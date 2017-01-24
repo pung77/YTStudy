@@ -1,15 +1,24 @@
 package Client;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 import common.Message;
 
@@ -18,19 +27,12 @@ public class Client {
 	private ObjectInputStream readStream;
 	private ObjectOutputStream writeStream;
 
-	private Thread receiveThread;
-	private Thread sendThread;
-
 	// 소켓 생성 및 스레드 생성
-	public void bind(String ip, int port) {
+	public void setting(String ip, int port) {
 		try {
 			clientSocket = new Socket(ip, port);
 			writeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 			readStream = new ObjectInputStream(clientSocket.getInputStream());
-
-			sendThread = new Thread(new SendMessageHandler(writeStream));
-			receiveThread = new Thread(new ReceiveMessageHandler(readStream));
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,17 +40,8 @@ public class Client {
 
 	public void start() {
 		Login loginUI = new Login(); // 로그인
-
-		receiveThread.start();
-		sendThread.start();
-
-		try {
-			receiveThread.join();
-			sendThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
+		Gui gui = new Gui();
+		gui.startThread();
 	}
 
 	private class Login extends JFrame implements ActionListener {
@@ -84,10 +77,9 @@ public class Client {
 			setVisible(true);
 		}
 		
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			String id = login.getText();
+			String id = tf.getText();
 			try {
 				writeStream.writeObject(new Message(Message.type_LOGIN, id));
 			} catch (IOException ex) {
@@ -95,10 +87,96 @@ public class Client {
 			}
 		}
 	}
+	
+	public class Gui {
+		private JFrame mainFrame;
+		private JPanel chatPane;
+		private JTextArea chatText;
+		private JTextField chatLine;
+
+		private SendMessageHandler sendHandler;
+		private ReceiveMessageHandler receiveHandler;
+
+		private Thread receiveThread;
+		private Thread sendThread;
+
+		public String getChatText() {
+			return chatText.getText();
+		}
+
+		public String getChatLine() {
+			return chatLine.getText();
+		}
+
+		public void setChatText(String text) {
+			chatText.setText(text);
+		}
+
+		public void setChatLine(String text) {
+			chatLine.setText(text);
+		}
+
+		public Gui() {
+			this.sendHandler = new SendMessageHandler(writeStream, this);
+			this.receiveHandler = new ReceiveMessageHandler(readStream, this);
+			
+			sendThread = new Thread(this.sendHandler);
+			receiveThread = new Thread(this.receiveHandler);
+
+			initChatRoom();
+		}
+
+		public void initChatRoom() {
+			chatPane = new JPanel(new BorderLayout());
+			chatText = new JTextArea(10, 20);
+			chatText.setLineWrap(true); // textbox 테두리
+			chatText.setEditable(false); // textbox 수정여부
+			chatText.setForeground(Color.blue); // 글씨색
+			
+			DefaultCaret caret = (DefaultCaret) chatText.getCaret();
+			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);	// 스크롤바가 항상 textarea 하단에 위치 
+
+			 JScrollPane chatTextPane = new JScrollPane(chatText,
+			 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+			 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			 
+			chatLine = new JTextField();
+			chatLine.setEnabled(true);
+			chatLine.addKeyListener(this.sendHandler); // 키이벤트
+
+			chatPane.add(chatLine, BorderLayout.SOUTH);
+			chatPane.add(chatTextPane, BorderLayout.CENTER);
+			chatPane.setPreferredSize(new Dimension(400, 400));
+
+			JPanel mainPane = new JPanel(new BorderLayout());
+			mainPane.add(chatPane, BorderLayout.CENTER);
+
+			mainFrame = new JFrame("채팅 프로그램");
+			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			mainFrame.setContentPane(mainPane);
+			mainFrame.setSize(mainFrame.getPreferredSize());
+			mainFrame.setLocation(200, 200);
+			mainFrame.pack();
+			mainFrame.setVisible(true);
+		}
+
+		public void startThread() {
+			receiveThread.start();
+			sendThread.start();
+
+			try {
+				receiveThread.join();
+				sendThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
 
 	public static void main(String[] args) {
 		Client ct = new Client();
-		ct.bind("localhost", 3000);
+		ct.setting("localhost", 3000);
 		ct.start();
 	}
 
