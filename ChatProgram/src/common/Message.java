@@ -30,9 +30,19 @@ public class Message implements Serializable {
 		return messageType;
 	}
 	
+	public void setMessage(String str)
+	{
+		sendMessage = str;
+	}
+	
 	public String getMessage()
 	{
 		return sendMessage;
+	}
+	
+	public void setSender(String str)
+	{
+		sender = str;
 	}
 	
 	public String getSender()
