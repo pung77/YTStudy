@@ -18,14 +18,11 @@ public class Gui {
 	private static JTextArea chatText;
 	private static JTextField chatLine;
 	
-	private ObjectInputStream readStream;
-	private ObjectOutputStream writeStream;
+	private SendMessageHandler sendHandler;
+	private ReceiveMessageHandler receiveHandler;
 	
 	private Thread receiveThread;
 	private Thread sendThread;
-	
-	private SendMessageHandler sendHandler;
-	private ReceiveMessageHandler receiveHandler;
 	
 	public String getChatText() {
 		return chatText.getText();
@@ -36,18 +33,21 @@ public class Gui {
 	}
 	
 	public static void setChatText(String text) {
-		Gui.chatText.setText(text);
+		chatText.setText(text);
 	}
 
 	public static void setChatLine(String text) {
-		Gui.chatLine.setText(text);
+		chatLine.setText(text);
 	}
 	
 	public Gui(ObjectInputStream readStream, ObjectOutputStream writeStream) {
-		this.setStream(readStream, writeStream);
-		this.sendHandler = new SendMessageHandler(this.writeStream, this);
-		this.receiveHandler = new ReceiveMessageHandler(this.readStream, this);
+		this.sendHandler = new SendMessageHandler(writeStream, this);
+		this.receiveHandler = new ReceiveMessageHandler(readStream, this);
 		
+		initChatRoom();
+	}
+	
+	public void initChatRoom() {
 		chatPane = new JPanel(new BorderLayout());
 		chatText = new JTextArea(10, 20);
 		chatText.setLineWrap(true); // textbox Å×µÎ¸®
@@ -77,23 +77,18 @@ public class Gui {
 		mainFrame.setVisible(true);
 	}
 	
-	public void setStream(ObjectInputStream readStream, ObjectOutputStream writeStream) {
-		this.readStream = readStream;
-		this.writeStream = writeStream;
-	}
-	
 	public void createThread() {
-		this.sendThread = new Thread(this.sendHandler);
-		this.receiveThread = new Thread(this.receiveHandler);
+		sendThread = new Thread(this.sendHandler);
+		receiveThread = new Thread(this.receiveHandler);
 	}
 	
 	public void startThread() {
-		this.receiveThread.start();
-		this.sendThread.start();
+		receiveThread.start();
+		sendThread.start();
 		
 		try {
-			this.receiveThread.join();
-			this.sendThread.join(); 
+			receiveThread.join();
+			sendThread.join(); 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

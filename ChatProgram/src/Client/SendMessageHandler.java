@@ -16,7 +16,6 @@ public class SendMessageHandler implements Runnable, KeyListener {
 	private boolean connected = false;
 	
 	public SendMessageHandler(ObjectOutputStream writeStream, Gui gui) {
-//		super();
 		this.writeStream = writeStream;
 		this.gui = gui;
 	}
@@ -28,10 +27,11 @@ public class SendMessageHandler implements Runnable, KeyListener {
 				if (this.connected) {
 					try {
 						msg = gui.getChatLine();
-						gui.setChatLine("");
 						if (msg != null && msg.length() > 0) {
 							writeStream.writeObject(new Message(Message.type_MESSAGE, msg));
 							writeStream.flush();
+							
+							gui.setChatLine("");
 							this.connected = false;
 						}
 					} catch (IOException e) {

@@ -14,9 +14,6 @@ public class Client {
 	private ObjectInputStream readStream;
 	private ObjectOutputStream writeStream;
 	
-//	private Thread receiveThread;
-//	private Thread sendThread;
-	
 	private Gui gui;
 	
 	// 소켓 생성 및 스레드 생성
@@ -27,12 +24,7 @@ public class Client {
 			readStream = new ObjectInputStream(clientSocket.getInputStream());
 			
 			gui = new Gui(readStream, writeStream);
-//			gui.setStream(readStream, writeStream);
 			gui.createThread();
-			
-//			sendThread = new Thread(new SendMessageHandler(writeStream));
-//			receiveThread = new Thread(new ReceiveMessageHandler(readStream));
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,17 +33,7 @@ public class Client {
 	public void start()
 	{
 		login();	// 로그인
-		
 		gui.startThread();
-//		receiveThread.start();
-//		sendThread.start();
-		
-//		try {
-////			receiveThread.join();
-////			sendThread.join(); 
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
 	}		
 	
 	private void login() {

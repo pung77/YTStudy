@@ -7,9 +7,10 @@ import common.Message;
 public class ReceiveMessageHandler implements Runnable {
 	private ObjectInputStream reader;
 	private Gui gui;
+	
+	private String contents = "";
 
 	public ReceiveMessageHandler(ObjectInputStream reader, Gui gui) {
-//		super();
 		this.reader = reader;
 		this.gui = gui;
 	}
@@ -21,8 +22,8 @@ public class ReceiveMessageHandler implements Runnable {
 
 				switch (receiveMessage.getMessageType()) {
 				case Message.type_MESSAGE:
-//					 System.out.printf("%s : %s\n", receiveMessage.getSender(), receiveMessage.getMessage());
-					gui.setChatText(receiveMessage.getSender() + ": " + receiveMessage.getMessage());
+					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
+					gui.setChatText(contents);
 					break;
 				default:
 				}
