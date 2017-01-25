@@ -26,7 +26,6 @@ public class Client {
 	private Socket clientSocket;
 	private ObjectInputStream readStream;
 	private ObjectOutputStream writeStream;
-	private static boolean isLogin = false;
 
 	// 소켓 생성 및 스레드 생성
 	public void setting(String ip, int port) {
@@ -41,10 +40,9 @@ public class Client {
 
 	public void start() {
 		Login loginUI = new Login(); // 로그인
-		if (isLogin) {
-			Gui gui = new Gui();
-			gui.startThread();
-		}
+		Gui gui = new Gui();
+		gui.startThread();
+		
 	}
 
 	private class Login extends JFrame implements ActionListener {
@@ -85,7 +83,7 @@ public class Client {
 			String id = tf.getText();
 			try {
 				writeStream.writeObject(new Message(Message.type_LOGIN, id));
-				isLogin = true;
+				dispose();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
