@@ -146,8 +146,13 @@ public class Client {
 			chatLine = new JTextField();
 			chatLine.setEnabled(true);
 			chatLine.addKeyListener(this.sendHandler); // 키이벤트
+			
+			JButton clearBtn = new JButton("clear");
+			clearBtn.setSize(70, 25);
+//			clearBtn.setLocation(325, 375);
 
 			chatPane.add(chatLine, BorderLayout.SOUTH);
+			chatPane.add(clearBtn);
 			chatPane.add(chatTextPane, BorderLayout.CENTER);
 			chatPane.setPreferredSize(new Dimension(400, 400));
 
