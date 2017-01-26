@@ -23,6 +23,7 @@ import javax.swing.text.DefaultCaret;
 import common.Message;
 
 public class Client {
+	// 귓속말, 잠금, 채팅창 클리어 기능 추가
 	private Socket clientSocket;
 	private ObjectInputStream readStream;
 	private ObjectOutputStream writeStream;
@@ -102,12 +103,12 @@ public class Client {
 		private Thread receiveThread;
 		private Thread sendThread;
 
-		public String getChatText() {
-			return chatText.getText();
+		public JTextArea getChatText() {
+			return chatText;
 		}
 
-		public String getChatLine() {
-			return chatLine.getText();
+		public JTextField getChatLine() {
+			return chatLine;
 		}
 
 		public void setChatText(String text) {

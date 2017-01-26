@@ -28,7 +28,7 @@ public class SendMessageHandler implements Runnable, KeyListener {
 				Thread.sleep(250);
 				if (this.connected) {
 					try {
-						msg = gui.getChatLine();
+						msg = gui.getChatLine().getText();
 						if (msg != null && msg.length() > 0) {
 							writeStream.writeObject(new Message(Message.type_MESSAGE, msg));
 							writeStream.flush();

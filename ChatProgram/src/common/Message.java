@@ -8,6 +8,7 @@ public class Message implements Serializable {
 	public static final int type_LOGIN = 1;
 	public static final int type_MESSAGE = 2;
 	public static final int type_LOGOUT = 3;
+	public static final int type_WHISPER = 4;
 	
 	private int messageType; 
 	private String sender; 

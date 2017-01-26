@@ -1,5 +1,6 @@
 package Client;
 
+import java.awt.Color;
 import java.io.ObjectInputStream;
 
 import Client.Client.Gui;
@@ -23,11 +24,16 @@ public class ReceiveMessageHandler implements Runnable {
 				Message receiveMessage = (Message) reader.readObject();
 
 				switch (receiveMessage.getMessageType()) {
-				case Message.type_MESSAGE:
-					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
-					gui.setChatText(contents);
-					break;
-				default:
+					case Message.type_MESSAGE:
+						contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
+						gui.setChatText(contents);
+						break;
+					case Message.type_WHISPER:
+						gui.getChatText().setForeground(Color.red); // 빨간색으로 변경
+						contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
+						gui.setChatText(contents);
+						break;
+					default:
 				}
 
 			} catch (Exception ex) {
