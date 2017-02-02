@@ -23,8 +23,20 @@ public class ReceiveMessageHandler implements Runnable {
 				Message receiveMessage = (Message) reader.readObject();
 
 				switch (receiveMessage.getMessageType()) {
+				case Message.type_LOGIN:
+					contents += "[" + receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "]\n";
+					gui.setChatText(contents);
+					break;
 				case Message.type_MESSAGE:
 					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
+					gui.setChatText(contents);
+					break;
+				case Message.type_LOGOUT:
+					contents += "[" + receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "]\n";
+					gui.setChatText(contents);
+					break;
+				case Message.type_WHISPER:
+					contents += "{" + receiveMessage.getSender() + "}" + ": " + receiveMessage.getMessage() + "\n";
 					gui.setChatText(contents);
 					break;
 				default:

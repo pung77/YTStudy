@@ -178,7 +178,8 @@ public class Client {
 
 	public static void main(String[] args) {
 		Client ct = new Client();
-		ct.setting("localhost", 3000);
+		//ct.setting("172.16.10.205", 3000);
+		ct.setting("127.0.0.1", 3000);
 		ct.start();
 	}
 

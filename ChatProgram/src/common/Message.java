@@ -8,9 +8,11 @@ public class Message implements Serializable {
 	public static final int type_LOGIN = 1;
 	public static final int type_MESSAGE = 2;
 	public static final int type_LOGOUT = 3;
+	public static final int type_WHISPER = 4;
 	
 	private int messageType; 
 	private String sender; 
+	private String receiver;
 	private String sendMessage;
 		
 	public Message(int type, String message)
@@ -48,6 +50,16 @@ public class Message implements Serializable {
 	public String getSender()
 	{
 		return sender;
+	}
+	
+	public void setReceiver(String str)
+	{
+		receiver = str;
+	}
+	
+	public String getReceiver()
+	{
+		return receiver;
 	}
 	
 }
