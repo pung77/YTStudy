@@ -116,8 +116,8 @@ public class Server {
                     if (clInfo == null)
                     	return false;
                     	
-                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + " is logged out.");
-                    // todo : Ȯ��
+                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + " logged out.");
+                    
                     msgSystemLogout.setSender("system");
                     SendToAll(msgSystemLogout);
                 } else
