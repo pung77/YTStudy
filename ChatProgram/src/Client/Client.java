@@ -43,7 +43,7 @@ public class Client {
 		Login loginUI = new Login(); // 로그인
 		Gui gui = new Gui();
 		gui.startThread();
-		
+
 	}
 
 	private class Login extends JFrame implements ActionListener {
@@ -78,7 +78,7 @@ public class Client {
 
 			setVisible(true);
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			String id = tf.getText();
@@ -90,12 +90,13 @@ public class Client {
 			}
 		}
 	}
-	
-	public class Gui {
+
+	public class Gui implements ActionListener {
 		private JFrame mainFrame;
 		private JPanel chatPane;
 		private JTextArea chatText;
 		private JTextField chatLine;
+		private JButton clearBtn;
 
 		private SendMessageHandler sendHandler;
 		private ReceiveMessageHandler receiveHandler;
@@ -118,11 +119,15 @@ public class Client {
 		public void setChatLine(String text) {
 			chatLine.setText(text);
 		}
+		
+		public JButton getClearBtn() {
+			return clearBtn;
+		}
 
 		public Gui() {
 			this.sendHandler = new SendMessageHandler(writeStream, this);
 			this.receiveHandler = new ReceiveMessageHandler(readStream, this);
-			
+
 			sendThread = new Thread(this.sendHandler);
 			receiveThread = new Thread(this.receiveHandler);
 
@@ -135,21 +140,24 @@ public class Client {
 			chatText.setLineWrap(true); // textbox 테두리
 			chatText.setEditable(false); // textbox 수정여부
 			chatText.setForeground(Color.blue); // 글씨색
-			
-			DefaultCaret caret = (DefaultCaret) chatText.getCaret();
-			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);	// 스크롤바가 항상 textarea 하단에 위치 
 
-			 JScrollPane chatTextPane = new JScrollPane(chatText,
-			 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-			 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			 
+			DefaultCaret caret = (DefaultCaret) chatText.getCaret();
+			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // 스크롤바가 항상
+																// textarea 하단에
+																// 위치
+
+			JScrollPane chatTextPane = new JScrollPane(chatText,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
 			chatLine = new JTextField();
 			chatLine.setEnabled(true);
 			chatLine.addKeyListener(this.sendHandler); // 키이벤트
-			
-			JButton clearBtn = new JButton("clear");
+
+			clearBtn = new JButton("clear");
 			clearBtn.setSize(70, 25);
-//			clearBtn.setLocation(325, 375);
+			// clearBtn.setLocation(325, 375);
+			clearBtn.addActionListener(this);
 
 			chatPane.add(chatLine, BorderLayout.SOUTH);
 			chatPane.add(clearBtn);
@@ -179,6 +187,14 @@ public class Client {
 				e.printStackTrace();
 			}
 
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			// 액션 리스너 재정의
+			if (e.getSource().equals(clearBtn)) {
+				chatText.setText("");
+				receiveHandler.setContents("");
+			}
 		}
 	}
 
