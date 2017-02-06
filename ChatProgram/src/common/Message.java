@@ -12,6 +12,7 @@ public class Message implements Serializable {
 	
 	private int messageType; 
 	private String sender; 
+	private String receiver;
 	private String sendMessage;
 		
 	public Message(int type, String message)
@@ -49,6 +50,16 @@ public class Message implements Serializable {
 	public String getSender()
 	{
 		return sender;
+	}
+	
+	public void setReceiver(String str)
+	{
+		receiver = str;
+	}
+	
+	public String getReceiver()
+	{
+		return receiver;
 	}
 	
 }

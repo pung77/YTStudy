@@ -95,7 +95,7 @@ public class Server {
                 clInfo.SetClientID(strMessge);
                 System.out.println("Registration of id successful. ip : " + strIpAddr + ", id : " + strMessge);
                 
-                Message msgSystemLogin = new Message(msg.getMessageType(), clInfo.GetClientID() + "���� �α��� �ϼ̽��ϴ�.");
+                Message msgSystemLogin = new Message(msg.getMessageType(), clInfo.GetClientID() + " is logged in.");
                 // todo : Ȯ��
                 msgSystemLogin.setSender("system");
                 SendToAll(msgSystemLogin);
@@ -116,8 +116,8 @@ public class Server {
                     if (clInfo == null)
                     	return false;
                     	
-                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + "���� �α׾ƿ� �Ǿ����ϴ�.");
-                    // todo : Ȯ��
+                    Message msgSystemLogout = new Message(msg.getMessageType(), clInfo.GetClientID() + " logged out.");
+                    
                     msgSystemLogout.setSender("system");
                     SendToAll(msgSystemLogout);
                 } else

@@ -25,16 +25,24 @@ public class ReceiveMessageHandler implements Runnable {
 				Message receiveMessage = (Message) reader.readObject();
 
 				switch (receiveMessage.getMessageType()) {
-					case Message.type_MESSAGE:
-						setContents(getContents() + (receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n"));
-						gui.setChatText(getContents());
-						break;
-					case Message.type_WHISPER:
-						gui.getChatText().setForeground(Color.red); // 빨간색으로 변경
-						setContents(getContents() + (receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n"));
-						gui.setChatText(getContents());
-						break;
-					default:
+				case Message.type_LOGIN:
+					contents += "[ " + receiveMessage.getSender() + ": " + receiveMessage.getMessage() + " ]\n";
+					gui.setChatText(contents);
+					break;
+				case Message.type_MESSAGE:
+					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
+					gui.setChatText(contents);
+					break;
+				case Message.type_LOGOUT:
+					contents += "[ " + receiveMessage.getSender() + ": " + receiveMessage.getMessage() + " ]\n";
+					gui.setChatText(contents);
+					break;
+				case Message.type_WHISPER:
+					gui.getChatText().setForeground(Color.red); // 빨간색으로 변경
+					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
+					gui.setChatText(contents);
+					break;
+				default:
 				}
 
 			} catch (Exception ex) {
