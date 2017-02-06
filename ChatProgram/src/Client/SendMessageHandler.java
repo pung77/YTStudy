@@ -30,7 +30,15 @@ public class SendMessageHandler implements Runnable, KeyListener {
 					try {
 						msg = gui.getChatLine().getText();
 						if (msg != null && msg.length() > 0) {
-							writeStream.writeObject(new Message(Message.type_MESSAGE, msg));
+							int whisperIndex = msg.indexOf(">>");
+							if (whisperIndex != -1) {	// split str in msg 
+								Message msgObj = new Message(Message.type_WHISPER, msg.substring(whisperIndex+2, msg.length()));
+								msgObj.setReceiver(msg.substring(0, whisperIndex));
+								writeStream.writeObject(msgObj);
+							} else {
+								writeStream.writeObject(new Message(Message.type_MESSAGE, msg));
+							}
+							
 							writeStream.flush();
 							
 							gui.setChatLine("");
