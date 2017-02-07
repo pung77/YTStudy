@@ -41,8 +41,8 @@ public class Client {
 	}
 
 	public void start() {
-		Login loginUI = new Login(); // 로그인
 		Gui gui = new Gui();
+		Login loginUI = new Login(); // 로그인
 		gui.startThread();
 
 	}
