@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -72,6 +73,7 @@ public class Client {
 			setLayout(new FlowLayout());
 
 			setTitle("Login");
+			setLocation(200, 200);
 			setSize(280, 100);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			loginText.setText("ID를 입력하시오");
@@ -94,9 +96,12 @@ public class Client {
 	public class Gui implements ActionListener {
 		private JFrame mainFrame;
 		private JPanel chatPane;
+		private JPanel buttonPane; 
 		private JTextArea chatText;
 		private JTextField chatLine;
 		private JButton clearBtn;
+		private JButton lockBtn; 
+		private JButton exitBtn; 
 
 		private SendMessageHandler sendHandler;
 		private ReceiveMessageHandler receiveHandler;
@@ -136,16 +141,16 @@ public class Client {
 
 		public void initChatRoom() {
 			chatPane = new JPanel(new BorderLayout());
+						
+			/* chatPane */
 			chatText = new JTextArea(10, 20);
 			chatText.setLineWrap(true); // textbox 테두리
 			chatText.setEditable(false); // textbox 수정여부
 			chatText.setForeground(Color.blue); // 글씨색
 
 			DefaultCaret caret = (DefaultCaret) chatText.getCaret();
-			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // 스크롤바가 항상
-																// textarea 하단에
-																// 위치
-
+			caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE); // 스크롤바가 항상  textarea 하단에 위치
+						
 			JScrollPane chatTextPane = new JScrollPane(chatText,
 					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -154,20 +159,37 @@ public class Client {
 			chatLine.setEnabled(true);
 			chatLine.addKeyListener(this.sendHandler); // 키이벤트
 
-			clearBtn = new JButton("clear");
-			clearBtn.setSize(70, 25);
-			// clearBtn.setLocation(325, 375);
-			clearBtn.addActionListener(this);
-
 			chatPane.add(chatLine, BorderLayout.SOUTH);
-			chatPane.add(clearBtn);
 			chatPane.add(chatTextPane, BorderLayout.CENTER);
 			chatPane.setPreferredSize(new Dimension(400, 400));
+			/* */
+			
+			/* buttonPane */
+			
+			buttonPane = new JPanel(new GridLayout(5, 0, 0, 50)); // 세로 5 x 가로 0 , 간격 50
+			buttonPane.setPreferredSize(new Dimension(80, 400));
+			
+			clearBtn = new JButton("clear");
+			lockBtn  = new JButton("lock");
+			exitBtn  = new JButton("exit");
+								
+			clearBtn.addActionListener(this);		
+			lockBtn.addActionListener(this);					
+			exitBtn.addActionListener(this);
+			
+			buttonPane.add(clearBtn);
+			buttonPane.add(lockBtn);
+			buttonPane.add(exitBtn);		
+			
+			/* */
 
-			JPanel mainPane = new JPanel(new BorderLayout());
-			mainPane.add(chatPane, BorderLayout.CENTER);
-
-			mainFrame = new JFrame("채팅 프로그램");
+			/* mainPane */
+			JPanel mainPane = new JPanel(new FlowLayout());
+			mainPane.add(chatPane);
+			mainPane.add(buttonPane);
+			/* */
+			
+			mainFrame = new JFrame("YettieSoft ChatProgram");
 			mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mainFrame.setContentPane(mainPane);
 			mainFrame.setSize(mainFrame.getPreferredSize());
@@ -194,6 +216,21 @@ public class Client {
 			if (e.getSource().equals(clearBtn)) {
 				chatText.setText("");
 				receiveHandler.setContents("");
+			}
+			else if (e.getSource().equals(lockBtn)) {
+				if( lockBtn.getText().equals("lock")) {
+					chatPane.setVisible(false);
+					clearBtn.setVisible(false);
+					lockBtn.setText("unlock");
+				}
+				else {
+					chatPane.setVisible(true);
+					clearBtn.setVisible(true);
+					lockBtn.setText("lock");
+				}
+			}
+			else if (e.getSource().equals(exitBtn)) {
+				System.exit(0);
 			}
 		}
 	}
