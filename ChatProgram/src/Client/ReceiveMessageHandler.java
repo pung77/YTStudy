@@ -25,22 +25,22 @@ public class ReceiveMessageHandler implements Runnable {
 
 				switch (receiveMessage.getMessageType()) {
 				case Message.type_LOGIN:
-					gui.getChatText().setForeground(Color.yellow); // color change
+//					gui.getChatText().setForeground(Color.yellow); // color change
 					contents += "[ " + receiveMessage.getSender() + ": " + receiveMessage.getMessage() + " ]\n";
 					gui.setChatText(contents);
 					break;
 				case Message.type_MESSAGE:
-					gui.getChatText().setForeground(Color.blue); // color change
+//					gui.getChatText().setForeground(Color.blue); // color change
 					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
 					gui.setChatText(contents);
 					break;
 				case Message.type_LOGOUT:
-					gui.getChatText().setForeground(Color.yellow); // color change
+//					gui.getChatText().setForeground(Color.yellow); // color change
 					contents += "[ " + receiveMessage.getSender() + ": " + receiveMessage.getMessage() + " ]\n";
 					gui.setChatText(contents);
 					break;
 				case Message.type_WHISPER:
-					gui.getChatText().setForeground(Color.red); // color change
+//					gui.getChatText().setForeground(Color.red); // color change
 					contents += receiveMessage.getSender() + ": " + receiveMessage.getMessage() + "\n";
 					gui.setChatText(contents);
 					break;
