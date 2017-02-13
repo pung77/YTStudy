@@ -27,6 +27,14 @@ public class Message implements Serializable {
 		this.sender = sender;
 	}
 	
+	public Message(int type, String message, String sender, String receiver)
+	{
+		this.messageType = type;
+		this.sendMessage = message; 
+		this.sender = sender;
+		this.receiver = receiver;
+	}
+	
 	public int getMessageType()
 	{
 		return messageType;
@@ -60,6 +68,14 @@ public class Message implements Serializable {
 	public String getReceiver()
 	{
 		return receiver;
+	}
+	
+	public Boolean IsExistReceiver()
+	{
+		if(receiver == "")
+			return false;
+		
+		return true;
 	}
 	
 }
