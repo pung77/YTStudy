@@ -48,7 +48,6 @@ public class Client {
 	}
 
 	private class Login extends JFrame implements ActionListener {
-
 		private JTextField tf;
 		private JButton login;
 		JLabel loginText = new JLabel();
@@ -74,7 +73,8 @@ public class Client {
 
 			setTitle("Login");
 			setLocation(200, 200);
-			setSize(280, 100);
+			//setSize(getPreferredSize());
+			setSize(280, 300);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			loginText.setText("ID를 입력하시오");
 
