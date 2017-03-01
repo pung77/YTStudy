@@ -1,10 +1,8 @@
 package Client;
 
-import java.awt.Color;
 import java.io.ObjectInputStream;
 
 import Client.Client.Gui;
-
 import common.Message;
 
 public class ReceiveMessageHandler implements Runnable {

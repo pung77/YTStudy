@@ -5,14 +5,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import java.util.Set;
 
 import common.Message;
+import common.UserList;
 
 public class Server {
 
@@ -47,6 +48,48 @@ public class Server {
             } catch (Exception e) {
                 System.out.println("readObject error: " + e);
                 e.printStackTrace();
+            }
+        }
+        
+        public ArrayList<String> getAllClientList() {
+        	ClientInfo clInfo = null;            
+            ArrayList<String> userList = new ArrayList<String>();
+        	
+        	Set<Entry<String, ClientInfo>> set = mapClient.entrySet();
+            Iterator<Entry<String, ClientInfo>> ite = set.iterator();
+            while (ite.hasNext()) {
+                Map.Entry<String, ClientInfo> e = (Map.Entry<String, ClientInfo>)ite.next();
+                clInfo = e.getValue();
+                if (clInfo == null)
+                    continue;
+                
+                userList.add(clInfo.GetClientID());
+            }
+            return userList;
+        }
+        
+        public void SendToAllLoginUserList() {
+            ClientInfo clInfo = null;
+            Socket socket = null;
+
+            Set<Entry<String, ClientInfo>> set = mapClient.entrySet();
+            Iterator<Entry<String, ClientInfo>> ite = set.iterator();
+            while (ite.hasNext()) {
+                Map.Entry<String, ClientInfo> e = (Map.Entry<String, ClientInfo>)ite.next();
+                clInfo = e.getValue();
+                if (clInfo == null)
+                    continue;
+
+                socket = clInfo.GetSocket();
+                if (socket == null)
+                    continue;
+
+                try {
+                    oOut = clInfo.getObjectOutputStream();
+                    oOut.writeObject( new UserList(UserList.type_UPDATE, getAllClientList()) );
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
 
@@ -139,6 +182,7 @@ public class Server {
                 // todo : Ȯ��
                 msgSystemLogin.setSender(strSystem);
                 SendToAll(msgSystemLogin);
+                SendToAllLoginUserList();
 
             } else if (nMessageType == Message.type_MESSAGE) {
                 ClientInfo clInfo = GetClientInfoByIP(strIpAddr);
