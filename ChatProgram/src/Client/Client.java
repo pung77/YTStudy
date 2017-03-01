@@ -112,7 +112,7 @@ public class Client {
 		private JButton clearBtn;
 		private JButton lockBtn; 
 		private JButton exitBtn;
-
+        private JTextField lockPasswordTextField;
         private JPanel loginJPanel;
         private JButton loginBtn;
         private JTextField loginTextField;
@@ -225,11 +225,12 @@ public class Client {
 			chatPane.add(chatLine, BorderLayout.SOUTH);
 			chatPane.add(chatTextPane, BorderLayout.CENTER);
 			chatPane.setPreferredSize(new Dimension(400, 400));
-			/* */
+
+			/* lock password */
+            lockPasswordTextField = new JTextField(20);
 			
 			/* buttonPane */
-			
-			buttonPane = new JPanel(new GridLayout(5, 0, 0, 50)); // 세로 5 x 가로 0 , 간격 50
+            buttonPane = new JPanel(new GridLayout(5, 0, 0, 50)); // 세로 5 x 가로 0 , 간격 50
 			buttonPane.setPreferredSize(new Dimension(80, 400));
 
 			clearBtn = new JButton("clear");
@@ -239,7 +240,9 @@ public class Client {
 			clearBtn.addActionListener(this);		
 			lockBtn.addActionListener(this);					
 			exitBtn.addActionListener(this);
-			
+
+            buttonPane.add(lockPasswordTextField);
+            lockPasswordTextField.setVisible(false);
 			buttonPane.add(clearBtn);
 			buttonPane.add(lockBtn);
 			buttonPane.add(exitBtn);
@@ -284,14 +287,34 @@ public class Client {
 			}
 			else if (e.getSource().equals(lockBtn)) {
 				if( lockBtn.getText().equals("lock")) {
+                    /*
+                     사이즈부터 조정하자...... 그지같다..
+                     우선.. visible로하면안되고.. remove로 처리해서 해야될듯.. 위치가 그지같이 뜸.....
+                     swing버립시다.... 기능동작 커밋.
+                    */
+                    buttonPane.setPreferredSize(new Dimension(200, 400));
+                    mainFrame.pack();
+
 					chatPane.setVisible(false);
 					clearBtn.setVisible(false);
 					lockBtn.setText("unlock");
+                    lockPasswordTextField.setVisible(true);
 				}
 				else {
-					chatPane.setVisible(true);
-					clearBtn.setVisible(true);
-					lockBtn.setText("lock");
+                    /* lockPasswordTextField.getText() 뽐아낸 값으로 비밀번호 확인후 트루이면 락품 */
+                    if(lockCheck(lockPasswordTextField.getText())){
+                        // 사이즈 원복
+                        buttonPane.setPreferredSize(new Dimension(80, 400));
+                        mainFrame.pack();
+
+                        lockPasswordTextField.setVisible(false);
+                        chatPane.setVisible(true);
+                        clearBtn.setVisible(true);
+                        lockBtn.setText("lock");
+                    }
+                    else {
+                        /* error 메세지... 어엄... */
+                    }
 				}
 			}
 			else if (e.getSource().equals(exitBtn)) {
@@ -307,6 +330,11 @@ public class Client {
 			    mainPane.add(buttonPane);
             }
 		}
+
+        private Boolean lockCheck(String password) {
+            // 무조건 성공!
+            return true;
+        }
 	}
 
 	public static void main(String[] args) {
