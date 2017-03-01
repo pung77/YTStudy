@@ -29,6 +29,7 @@ public class Client {
 	private ObjectInputStream readStream;
 	private ObjectOutputStream writeStream;
 
+
 	// 소켓 생성 및 스레드 생성
 	public void setting(String ip, int port) {
 		try {
@@ -41,16 +42,23 @@ public class Client {
 	}
 
 	public void start() {
-		Gui gui = new Gui();
-		Login loginUI = new Login(); // 로그인
-		gui.startThread();
+        /*
+        플로우? 흐름?? 에따라 조금씩 변경될듯.
+        1. 하나의 아이디로 여러 채팅 방에 접속항때 Gui 아이디 입력받아 채팅방에서 쓰레드 생성..
+        2. 새로운 채팅방에 접속항때마다 아이디를 입력받음. Gui 안에 loginUI 구성
+        3. 뭐.. 확장가능하게.. 큰 패널안에 만들어서 처리해도 될듯... => 귀찮아....
+         */
+
+        // 오ㅒ!!! 안에서 호출하면안될까.. 고민.
+        //Login loginUI = new Login(); // 로그인;
+        Gui gui = new Gui();
 
 	}
 
 	private class Login extends JFrame implements ActionListener {
-
 		private JTextField tf;
 		private JButton login;
+
 		JLabel loginText = new JLabel();
 
 		public Login() {
@@ -84,30 +92,37 @@ public class Client {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			String id = tf.getText();
-			try {
-				writeStream.writeObject(new Message(Message.type_LOGIN, id));
-				dispose();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+            try {
+                writeStream.writeObject(new Message(Message.type_LOGIN, id));
+                dispose();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 		}
 	}
 
 	public class Gui implements ActionListener {
 		private JFrame mainFrame;
+        private JPanel mainPane;
 		private JPanel chatPane;
 		private JPanel buttonPane; 
 		private JTextArea chatText;
 		private JTextField chatLine;
 		private JButton clearBtn;
 		private JButton lockBtn; 
-		private JButton exitBtn; 
+		private JButton exitBtn;
+
+        private JPanel loginJPanel;
+        private JButton loginBtn;
+        private JTextField loginTextField;
 
 		private SendMessageHandler sendHandler;
 		private ReceiveMessageHandler receiveHandler;
 
 		private Thread receiveThread;
 		private Thread sendThread;
+
+        private String id;
 
 		public JTextArea getChatText() {
 			return chatText;
@@ -129,6 +144,11 @@ public class Client {
 			return clearBtn;
 		}
 
+        public void setId(String id){
+            this.id = id;
+            postLoginId(id);
+        }
+
 		public Gui() {
 			this.sendHandler = new SendMessageHandler(writeStream, this);
 			this.receiveHandler = new ReceiveMessageHandler(readStream, this);
@@ -136,11 +156,53 @@ public class Client {
 			sendThread = new Thread(this.sendHandler);
 			receiveThread = new Thread(this.receiveHandler);
 
-			initChatRoom();
+            initChatRoom();
+            startThread();
 		}
+
+        private void postLoginId(String id) {
+            try {
+                writeStream.writeObject(new Message(Message.type_LOGIN, id));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        public JPanel loginUI() {
+            JPanel loginJPanel = new JPanel();
+
+            JLabel loginText = new JLabel();
+            JPanel idPanel = new JPanel();
+            loginTextField = new JTextField(12);
+            loginText.setForeground(Color.RED);
+
+            JLabel idLabel = new JLabel("ID : ");
+
+            loginBtn = new JButton("LOGIN");
+            loginBtn.addActionListener(this);
+
+            idPanel.add(idLabel);
+            idPanel.add(loginTextField);
+
+            loginJPanel.add(idPanel);
+            loginJPanel.add(loginBtn);
+            loginJPanel.add(loginText);
+
+            loginJPanel.setLayout(new FlowLayout());
+
+            loginJPanel.setLocation(200, 200);
+            loginJPanel.setSize(280, 100);
+            //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            loginText.setText("ID를 입력하시오");
+
+            //setVisible(true);
+
+            return loginJPanel;
+        }
 
 		public void initChatRoom() {
 			chatPane = new JPanel(new BorderLayout());
+            loginJPanel = loginUI();
 						
 			/* chatPane */
 			chatText = new JTextArea(10, 20);
@@ -168,25 +230,26 @@ public class Client {
 			
 			buttonPane = new JPanel(new GridLayout(5, 0, 0, 50)); // 세로 5 x 가로 0 , 간격 50
 			buttonPane.setPreferredSize(new Dimension(80, 400));
-			
+
 			clearBtn = new JButton("clear");
 			lockBtn  = new JButton("lock");
 			exitBtn  = new JButton("exit");
-								
+
 			clearBtn.addActionListener(this);		
 			lockBtn.addActionListener(this);					
 			exitBtn.addActionListener(this);
 			
 			buttonPane.add(clearBtn);
 			buttonPane.add(lockBtn);
-			buttonPane.add(exitBtn);		
+			buttonPane.add(exitBtn);
 			
 			/* */
 
 			/* mainPane */
-			JPanel mainPane = new JPanel(new FlowLayout());
-			mainPane.add(chatPane);
-			mainPane.add(buttonPane);
+			mainPane = new JPanel(new FlowLayout());
+//			mainPane.add(chatPane);
+//			mainPane.add(buttonPane);
+            mainPane.add(loginJPanel);
 			/* */
 			
 			mainFrame = new JFrame("YettieSoft ChatProgram");
@@ -194,8 +257,9 @@ public class Client {
 			mainFrame.setContentPane(mainPane);
 			mainFrame.setSize(mainFrame.getPreferredSize());
 			mainFrame.setLocation(200, 200);
-			mainFrame.pack();
+            mainFrame.pack();
 			mainFrame.setVisible(true);
+
 		}
 
 		public void startThread() {
@@ -232,6 +296,15 @@ public class Client {
 			else if (e.getSource().equals(exitBtn)) {
 				System.exit(0);
 			}
+            else if(e.getSource().equals(loginBtn)) {
+                postLoginId(loginTextField.getText());
+                mainPane.remove(loginJPanel);
+
+                mainFrame.setPreferredSize(new Dimension(550, 480));
+                mainFrame.pack();
+                mainPane.add(chatPane);
+			    mainPane.add(buttonPane);
+            }
 		}
 	}
 
