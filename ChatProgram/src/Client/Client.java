@@ -116,6 +116,8 @@ public class Client {
         private JPanel loginJPanel;
         private JButton loginBtn;
         private JTextField loginTextField;
+        private JPanel userListPane;
+        private JTextArea userList;
 
 		private SendMessageHandler sendHandler;
 		private ReceiveMessageHandler receiveHandler;
@@ -136,6 +138,10 @@ public class Client {
 		public void setChatText(String text) {
 			chatText.setText(text);
 		}
+
+        public void setUserList(String userId) {
+            userList.setText(userId);
+        }
 
 		public void setChatLine(String text) {
 			chatLine.setText(text);
@@ -226,6 +232,17 @@ public class Client {
 			chatPane.add(chatTextPane, BorderLayout.CENTER);
 			chatPane.setPreferredSize(new Dimension(400, 400));
 
+            /* userList */
+            userListPane = new JPanel(new BorderLayout());
+            userListPane.setPreferredSize(new Dimension(80, 400));
+
+            userList = new JTextArea(10, 20);
+            userList.setLineWrap(true); // textbox 테두리
+            userList.setEditable(false); // textbox 수정여부
+            userList.setForeground(Color.black); // 글씨색
+
+            userListPane.add(userList, BorderLayout.CENTER);
+
 			/* lock password */
             lockPasswordTextField = new JTextField(20);
 			
@@ -297,6 +314,7 @@ public class Client {
 
 					chatPane.setVisible(false);
 					clearBtn.setVisible(false);
+                    userListPane.setVisible(false);
 					lockBtn.setText("unlock");
                     lockPasswordTextField.setVisible(true);
 				}
@@ -310,6 +328,7 @@ public class Client {
                         lockPasswordTextField.setVisible(false);
                         chatPane.setVisible(true);
                         clearBtn.setVisible(true);
+                        userListPane.setVisible(true);
                         lockBtn.setText("lock");
                     }
                     else {
@@ -324,10 +343,11 @@ public class Client {
                 postLoginId(loginTextField.getText());
                 mainPane.remove(loginJPanel);
 
-                mainFrame.setPreferredSize(new Dimension(550, 480));
+                mainFrame.setPreferredSize(new Dimension(630, 480));
                 mainFrame.pack();
                 mainPane.add(chatPane);
-			    mainPane.add(buttonPane);
+                mainPane.add(userListPane);
+                mainPane.add(buttonPane);
             }
 		}
 
