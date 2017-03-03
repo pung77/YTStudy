@@ -46,8 +46,7 @@ public class Server {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("readObject error: " + e);
-                e.printStackTrace();
+            	SendToAll(new Message(Message.type_MESSAGE, threadClient.GetClientID() + " is logged out", "System"));
             }
         }
         
